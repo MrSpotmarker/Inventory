@@ -318,15 +318,16 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
             String name = data.getString(data.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME));
-            Integer priceAsInt = data.getInt(data.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE));
+            String priceString = data.getString(data.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE));
             Integer stock = data.getInt(data.getColumnIndex(ProductEntry.COLUMN_PRODUCT_IN_STOCK));
             String supplier = data.getString(data.getColumnIndex(ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL));
             String imageUri = data.getString(data.getColumnIndex(ProductEntry.COLUMN_PRODUCT_IMAGE_URI));
 
             // set values on EditText --> possible alternative - play with BigDecimal
             mNameEditText.setText(name);
-            Float price = Float.valueOf(priceAsInt / 100); // Calculate back from cent to Euro
-            mPriceEditText.setText(String.valueOf(price));
+            BigDecimal priceBd = new BigDecimal(priceString).movePointLeft(2);
+            String priceFinal = priceBd.toString();
+            mPriceEditText.setText(String.valueOf(priceFinal));
             mStockEditText.setText(Integer.toString(stock));
             mSupplierEditText.setText(supplier);
             if (imageUri != null) {
@@ -410,6 +411,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String stockString = mStockEditText.getText().toString().trim();
         String supplierString = mSupplierEditText.getText().toString().trim();
 
+        // checks if all necessary values are provided
         if (mCurrentProductUri == null &&
                 TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) &&
                 TextUtils.isEmpty(stockString)) {
@@ -424,6 +426,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         if (TextUtils.isEmpty(nameString)) {
             Toast.makeText(this, getString(R.string.editor_name_is_zero),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(stockString)) {
+            Toast.makeText(this, getString(R.string.editor_stock_is_zero),
                     Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -444,8 +452,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         int price = priceBd.movePointRight(2).intValueExact();
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, price);
 
-        if (mCurrentImageUri != null)
+        if (mCurrentImageUri != null) {
             values.put(ProductEntry.COLUMN_PRODUCT_IMAGE_URI, mCurrentImageUri);
+        } else {
+            Toast.makeText(this, getString(R.string.editor_image_is_null),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
         // Insert a new product into the provider, returning the content URI for the new pet.
         Uri newUri = getContentResolver().insert(ProductEntry.CONTENT_URI, values);
@@ -461,6 +474,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     Toast.LENGTH_SHORT).show();
         }
         return true;
+
     }
 
     /**
@@ -486,6 +500,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             return false;
         }
 
+        if (TextUtils.isEmpty(stockString)) {
+            Toast.makeText(this, getString(R.string.editor_stock_is_zero),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
         // Create a ContentValues object where column names are the keys,
         // and product attributes from the editor are the values.
         ContentValues values = new ContentValues();
@@ -502,8 +523,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         int price = priceBd.movePointRight(2).intValueExact();
         values.put(ProductEntry.COLUMN_PRODUCT_PRICE, price);
 
-        if (mCurrentImageUri != null)
+        if (mCurrentImageUri != null) {
             values.put(ProductEntry.COLUMN_PRODUCT_IMAGE_URI, mCurrentImageUri);
+            } else {
+            Toast.makeText(this, getString(R.string.editor_image_is_null),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        };
 
         // Insert a new product into the provider, returning the content URI for the new pet.
         int rowsAffected = getContentResolver().update(

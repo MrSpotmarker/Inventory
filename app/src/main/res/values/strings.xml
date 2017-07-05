@@ -54,6 +54,10 @@
     <string name="keep_editing">Keep Editing</string>
     <!-- Toast message when price is zero -->
     <string name="editor_price_is_zero">Please enter price</string>
+    <!-- Toast message when stock is zero -->
+    <string name="editor_stock_is_zero">Please enter current stock</string>
+    <!-- Toast message when no image was taken-->
+    <string name="editor_image_is_null">Please take an image of the product</string>
     <!-- Toast message when name is zero -->
     <string name="editor_name_is_zero">Please enter name</string>
     <!-- Toast message for successfully adding a product -->
