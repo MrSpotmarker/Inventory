@@ -22,11 +22,12 @@ import java.math.BigDecimal;
  * Adapter class for inflating Views on the list.
  */
 
-public class ProductCursorAdpapter extends CursorAdapter {
+class ProductCursorAdpapter extends CursorAdapter {
 
     public ProductCursorAdpapter(Context context) {
         super(context, null, 0);
     }
+
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);

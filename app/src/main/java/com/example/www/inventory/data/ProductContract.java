@@ -10,19 +10,17 @@ import android.provider.BaseColumns;
 
 public final class ProductContract {
 
+    // Content authority
+    public static final String CONTENT_AUTHORITY = "com.example.www.inventory";
+    // basi content URI
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    // path for "product" data
+    public static final String PRODUCT_PATH = "products";
+
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
     private ProductContract() {
     }
-
-    // Content authority
-    public static final String CONTENT_AUTHORITY = "com.example.www.inventory";
-
-    // basi content URI
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
-    // path for "product" data
-    public static final String PRODUCT_PATH = "products";
 
     // inner class that defines constants for products database table
     // each entry representa a single product

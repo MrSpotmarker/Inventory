@@ -169,9 +169,6 @@ public class ProductProvider extends ContentProvider {
     }
 
     private Uri insertProduct(Uri uri, ContentValues values) {
-
-        // TODO check if sanity checks are ok
-
         // get name + sanity check
         String name = values.getAsString(ProductEntry.COLUMN_PRODUCT_NAME);
         if (name == null) {

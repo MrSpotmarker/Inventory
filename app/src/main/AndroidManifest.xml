@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.www.inventory">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
 
@@ -43,10 +47,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
-
-        <uses-feature
-            android:name="android.hardware.camera"
-            android:required="true" />
     </application>
 
 </manifest>

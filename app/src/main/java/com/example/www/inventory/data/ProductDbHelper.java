@@ -10,7 +10,7 @@ import com.example.www.inventory.data.ProductContract.ProductEntry;
  * Database helper for Inventory app. Manages database creation and version management
  */
 
-public class ProductDbHelper extends SQLiteOpenHelper {
+class ProductDbHelper extends SQLiteOpenHelper {
 
     // Name of the database file
     private static final String DATABASE_NAME = "inventory.db";

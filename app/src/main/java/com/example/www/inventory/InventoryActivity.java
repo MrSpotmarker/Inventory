@@ -1,15 +1,15 @@
 package com.example.www.inventory;
 
-import android.support.v4.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +19,7 @@ import android.widget.ListView;
 
 import com.example.www.inventory.data.ProductContract.ProductEntry;
 
-public class InventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class InventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int PRODUCT_LOADER_ID = 0;
     private ProductCursorAdpapter mCursorAdapter;
@@ -102,8 +102,8 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                 ProductEntry.COLUMN_PRODUCT_PRICE,
                 ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL};
 
-    // Perform a query on the provider using the ContentResolver.
-    // Use the {@link ProductEntry#CONTENT_URI} to access the pet data.
+        // Perform a query on the provider using the ContentResolver.
+        // Use the {@link ProductEntry#CONTENT_URI} to access the pet data.
         return new CursorLoader(this,           // Parent activity context
                 ProductEntry.CONTENT_URI,       // The content URI of the words table
                 projection,                     // The columns to return for each row

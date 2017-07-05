@@ -151,7 +151,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/contact_supplier"
+        android:id="@+id/order_more_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorAccent"

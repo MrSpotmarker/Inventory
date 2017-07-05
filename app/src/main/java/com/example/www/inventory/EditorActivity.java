@@ -1,5 +1,6 @@
 package com.example.www.inventory;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
@@ -32,9 +34,8 @@ import android.widget.Toast;
 import com.example.www.inventory.data.ProductContract.ProductEntry;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,7 +46,7 @@ import java.util.Date;
 
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    static final int REQUEST_TAKE_PHOTO = 1;
+    private static final int REQUEST_TAKE_PHOTO = 1;
 
     private static final String LOG_TAG = EditorActivity.class.getSimpleName();
     // static for LoaderManager instance
@@ -60,16 +61,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mSupplierEditText;
     // ImageView for product image
     private ImageView mProductImageView;
-    // ImageButton for taking image
-    private ImageButton mTakeImageButton;
-    // Button for increasing stock
-    private Button mIncreaseStockButton;
-    // Button for increasing stock
-    private Button mReduceStockButton;
-
-    // Width and Height of Imageview
-    private int mImageViewWidth;
-    private int mImageViewHeight;
 
     // String were current photo path is saved
     String mCurrentPhotoPath;
@@ -96,10 +87,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mSupplierEditText = (EditText) findViewById(R.id.edit_product_supplier);
         // find ImageView for product image
         mProductImageView = (ImageView) findViewById(R.id.product_image);
-        // find Buttons for increasing and decreasing stock and taking photo;
-        mReduceStockButton = (Button) findViewById(R.id.reduceStock);
-        mIncreaseStockButton = (Button) findViewById(R.id.increaseStock);
-        mTakeImageButton = (ImageButton) findViewById(R.id.take_image);
+        // find Buttons for increasing and decreasing stock, taking photo and ordering more;
+        Button mReduceStockButton = (Button) findViewById(R.id.reduceStock);
+        Button mIncreaseStockButton = (Button) findViewById(R.id.increaseStock);
+        ImageButton mTakeImageButton = (ImageButton) findViewById(R.id.take_image);
+        Button mOrderMoreButton = (Button) findViewById(R.id.order_more_button);
 
         // If the intent doens't contain a pet URI we create a new pet. Else we edit an existing one
         if (mCurrentProductUri == null) {
@@ -177,7 +169,30 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     }
 
                 }
-                mProductImageView.setImageBitmap(getBitmapFromUri(Uri.parse(mCurrentImageUri)));
+            }
+        });
+
+        // Set touch listener for mOrderMoreButton
+        mOrderMoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //get values
+                String productName = mNameEditText.getText().toString();
+                String supplierMail = mSupplierEditText.getText().toString();
+                String subject = getString(R.string.mail_subject);
+                String textBase = getString(R.string.mail_text);
+                String text = String.format(textBase, productName);
+
+                //create Intent
+                Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
+                mailIntent.setType("*/*");
+                mailIntent.setData(Uri.parse("mailto:"));
+                mailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{supplierMail});
+                mailIntent.putExtra(Intent.EXTRA_SUBJECT, subject + productName);
+                mailIntent.putExtra(Intent.EXTRA_TEXT, text);
+                if (mailIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mailIntent);
+                }
             }
         });
     }
@@ -316,7 +331,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             mSupplierEditText.setText(supplier);
             if (imageUri != null) {
                 mProductImageView.setImageBitmap(getBitmapFromUri(Uri.parse(imageUri)));
-            } else {;
             }
         }
     }
@@ -327,6 +341,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mPriceEditText.setText("");
         mStockEditText.setText("");
         mSupplierEditText.setText("");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            // mProductImageView.setImageBitmap(getBitmapFromUri(Uri.parse(mCurrentImageUri)));
+            mProductImageView.setImageURI(Uri.parse(mCurrentImageUri));
+        }
     }
 
     private void showDeleteConfirmationDialog() {
@@ -530,7 +552,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     }
 
-    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+    private final View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             mProductHasChanged = true;
@@ -554,53 +576,52 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         return image;
     }
 
-    public Bitmap getBitmapFromUri(Uri uri) {
+    private Bitmap getBitmapFromUri(Uri uri) {
 
-        if (uri == null || uri.toString().isEmpty())
-            return null;
-
-        // Get the dimensions of the View
-        int targetW = mProductImageView.getWidth();
-        int targetH = mProductImageView.getHeight();
-
-        InputStream input = null;
+        ParcelFileDescriptor parcelFileDescriptor = null;
         try {
-            input = this.getContentResolver().openInputStream(uri);
-
-            // Get the dimensions of the bitmap
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmOptions.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(input, null, bmOptions);
-            input.close();
-
-            int photoW = bmOptions.outWidth;
-            int photoH = bmOptions.outHeight;
-
-            // Determine how much to scale down the image
-            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
-
-            // Decode the image file into a Bitmap sized to fill the View
-            bmOptions.inJustDecodeBounds = false;
-            bmOptions.inSampleSize = scaleFactor;
-            bmOptions.inPurgeable = true;
-
-            input = this.getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(input, null, bmOptions);
-            input.close();
-            return bitmap;
-
-        } catch (FileNotFoundException fne) {
-            Log.e(LOG_TAG, "Failed to load image.", fne);
-            return null;
+            parcelFileDescriptor =
+                    getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+            parcelFileDescriptor.close();
+            int maxWidth = mProductImageView.getWidth();
+            int maxHeight = mProductImageView.getHeight();
+            resizeImage(image, maxWidth, maxHeight);
+            return image;
         } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to load image.", e);
             return null;
         } finally {
             try {
-                input.close();
-            } catch (IOException ioe) {
-
+                if (parcelFileDescriptor != null) {
+                    parcelFileDescriptor.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(LOG_TAG, "Error closing ParcelFile Descriptor");
             }
+        }
+    }
+
+    private Bitmap resizeImage(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > 1) {
+                finalWidth = (int) ((float) maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float) maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
         }
     }
 }

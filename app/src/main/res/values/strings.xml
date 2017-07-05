@@ -31,7 +31,7 @@
     <!-- Hint supplier email-->
     <string name="hint_product_supplier">E-Mail</string>
     <!-- Button contact supplier-->
-    <string name="button_contact_supplier">reorder</string>
+    <string name="button_contact_supplier">Order more</string>
     <!-- Currency symbol -->
     <string name="currency">€</string>
 
@@ -76,5 +76,10 @@
     <string name="action_save">Save</string>
     <!-- Label for editor overflow menu option that deletes the current product -->
     <string name="action_delete">Delete</string>
+
+    <!-- Strings used for mailIntent  -->
+    <!-- Subject line -->
+    <string name="mail_subject">"New order: "</string>
+    <string name="mail_text">"Dear supplier! \n\nI want to place following order:\n\n Item: %1$s\nQuantity: 10\n\n Best Regards\nInventory Inc\n\n(automatically generated via app)</string>
 
 </resources>
