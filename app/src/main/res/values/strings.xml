@@ -1,0 +1,80 @@
+<resources>
+
+    <!-- App title-->
+    <string name="app_name">Inventory</string>
+
+    <!-- Strings used in Inventory Layout  -->
+    <!-- Empty view title text -->
+    <string name="empty_title_text">No items added to inventory!</string>
+    <!-- Empty view body text -->
+    <string name="empty_body_text">Please add items to the inventory using the button in the lower right corner.</string>
+    <!-- Text for sale button in inventory activity -->
+    <string name="button_sale">Sale</string>
+    <!-- Text for "in stock" label in inventory activity -->
+    <string name="stock_label">"In stock: "</string>
+    <!-- Text for "in stock" label in inventory activity -->
+    <string name="price_label">"Price: "</string>
+
+    <!-- Strings used in Editor Layout  -->
+    <!-- Text product category-->
+    <string name="category_overview">Product information</string>
+    <!-- Text products in stock-->
+    <string name="category_stock">Items in stock</string>
+    <!-- Text supplier contact-->
+    <string name="category_supplier">Supplier</string>
+    <!-- Hint product name-->
+    <string name="hint_product_name">Name</string>
+    <!-- Hint product price-->
+    <string name="hint_product_price">Price</string>
+    <!-- Hint product stock-->
+    <string name="hint_product_stock">Amount</string>
+    <!-- Hint supplier email-->
+    <string name="hint_product_supplier">E-Mail</string>
+    <!-- Button contact supplier-->
+    <string name="button_contact_supplier">reorder</string>
+    <!-- Currency symbol -->
+    <string name="currency">€</string>
+
+    <!-- Strings used in Editor java  -->
+    <!-- Title for editor in "edit mode" -->
+    <string name="editor_activity_title_edit_product">Edit Product</string>
+    <!-- Title for editor in "add mode" -->
+    <string name="editor_activity_title_new_product">Add Product</string>
+    <!-- Delete dialog -->
+    <string name="delete_dialog_msg">Delete this product?</string>
+    <!-- Text for positive delete button -->
+    <string name="delete">Delete</string>
+    <!-- Text for negative delete button -->
+    <string name="cancel">Cancel</string>
+    <!-- Dialog message when user is leaving editor but hasn't saved changes -->
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+    <!-- Dialog button text for the option to discard a user's changes -->
+    <string name="discard">Discard</string>
+    <!-- Dialog button text for the option to keep editing the current pet -->
+    <string name="keep_editing">Keep Editing</string>
+    <!-- Toast message when price is zero -->
+    <string name="editor_price_is_zero">Please enter price</string>
+    <!-- Toast message when name is zero -->
+    <string name="editor_name_is_zero">Please enter name</string>
+    <!-- Toast message for successfully adding a product -->
+    <string name="editor_insert_product_successful">Product added</string>
+    <!-- Toast message when adding a product failed -->
+    <string name="editor_insert_product_failed">Error with adding product</string>
+    <!-- Toast message for successfully updating a product -->
+    <string name="editor_update_product_successful">Product updated</string>
+    <!-- Toast message when updating a product failed -->
+    <string name="editor_update_product_failed">Error with updating product</string>
+    <!-- Toast message for successfully deletinga product -->
+    <string name="editor_delete_product_successful">Product deleted</string>
+    <!-- Toast message when deleting a product failed -->
+    <string name="editor_delete_product_failed">Error with deleting product</string>
+
+    <!-- Strings used in Menus  -->
+    <!-- Label for overflow menu option that deletes all product data in the app -->
+    <string name="action_delete_all_entries">Delete All Products</string>
+    <!-- Label for editor menu option to save product and leave editor -->
+    <string name="action_save">Save</string>
+    <!-- Label for editor overflow menu option that deletes the current product -->
+    <string name="action_delete">Delete</string>
+
+</resources>
